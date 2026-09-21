@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skool Community Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0c0e10;
+      --panel:     #131618;
+      --card:      #1c1f23;
+      --border:    #272b30;
+      --gold:      #e8a838;
+      --gold-dim:  rgba(232,168,56,0.12);
+      --text:      #e2e4e8;
+      --muted:     #7a7d83;
+      --user-bg:   #1e2327;
+      --ai-bg:     #161a1d;
+      --green:     #4ade80;
+      --red:       #f87171;
+      --radius:    10px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* ══════════════════════════════════
+       SCREEN 1 — IDEA DUMP
+       ══════════════════════════════════ */
+    #screen-dump {
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .dump-wrap {
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 44px;
+    }
+
+    .logo-box {
+      width: 32px;
+      height: 32px;
+      background: var(--gold);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .dump-wrap h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(30px, 5vw, 50px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .dump-wrap .sub {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 540px;
+    }
+
+    /* API key card */
+    .key-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    .key-card label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .key-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .key-row input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .key-row input:focus { border-color: var(--gold); }
+    .key-row input::placeholder { color: var(--muted); }
+
+    .btn-sm {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 7px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-sm:hover { opacity: 0.85; }
+
+    .key-saved {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--green);
+      margin-top: 10px;
+    }
+
+    /* Idea textarea */
+    #idea-input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      resize: vertical;
+      min-height: 200px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 18px;
+    }
+
+    #idea-input:focus { border-color: var(--gold); }
+    #idea-input::placeholder { color: var(--muted); }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      padding: 17px 32px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* ══════════════════════════════════
+       SCREEN 2 — BUILDER
+       ══════════════════════════════════ */
+    #screen-builder {
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── CHAT PANEL (left) ── */
+    .chat-panel {
+      width: 44%;
+      min-width: 320px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .logo-sm {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+
+    /* Progress bar */
+    .prog-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .prog-track {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    .prog-label {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* Messages */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .messages::-webkit-scrollbar { width: 3px; }
+    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .msg { display: flex; flex-direction: column; max-width: 90%; }
+    .msg.user { align-self: flex-end; align-items: flex-end; }
+    .msg.ai { align-self: flex-start; align-items: flex-start; }
+
+    .msg-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      padding: 0 2px;
+    }
+
+    .msg.user .msg-label { color: var(--muted); }
+    .msg.ai .msg-label { color: var(--gold); }
+
+    .msg-bubble {
+      padding: 13px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .msg.user .msg-bubble {
+      background: var(--user-bg);
+      border: 1px solid var(--border);
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.ai .msg-bubble {
+      background: var(--ai-bg);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-bubble p { margin-bottom: 8px; }
+    .msg-bubble p:last-child { margin-bottom: 0; }
+    .msg-bubble strong { color: var(--gold); font-weight: 600; }
+
+    /* Typing */
+    .typing-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .typing-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 0 2px;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      padding: 13px 16px;
+      background: var(--ai-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: tdot 1.3s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.18s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes tdot {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Chat input */
+    .chat-input-area {
+      display: flex;
+      gap: 10px;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--panel);
+    }
+
+    #chat-input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #chat-input:focus { border-color: var(--gold); }
+    #chat-input::placeholder { color: var(--muted); }
+    #chat-input:disabled { opacity: 0.5; }
+
+    .send-btn {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 0 20px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      align-self: flex-end;
+      height: 42px;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── BLUEPRINT PANEL (right) ── */
+    .bp-panel {
+      flex: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      min-width: 0;
+    }
+
+    .bp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .bp-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Waiting state */
+    .bp-waiting {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--muted);
+      text-align: center;
+      padding: 40px;
+    }
+
+    .bp-waiting .icon { font-size: 44px; opacity: 0.25; }
+
+    .bp-waiting h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .bp-waiting p { font-size: 14px; max-width: 280px; line-height: 1.65; }
+
+    /* Live sections */
+    .bp-live {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bp-live::-webkit-scrollbar { width: 3px; }
+    .bp-live::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .bps {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .bps.filled { border-color: rgba(232,168,56,0.35); }
+
+    .bps-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bps.filled .bps-head { border-color: rgba(232,168,56,0.18); }
+
+    .bps-icon { font-size: 15px; }
+
+    .bps-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .bps.filled .bps-name { color: var(--gold); }
+
+    .bps-badge {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .bps.filled .bps-badge { color: var(--green); }
+
+    .bps-body { padding: 14px 16px; }
+
+    .bps-empty {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .bps-fields { display: flex; flex-direction: column; gap: 10px; }
+
+    .bps-field-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .bps-field-val {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Generate button */
+    .gen-bar {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .btn-generate {
+      width: 100%;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      padding: 15px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-generate:hover { opacity: 0.85; }
+    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Full blueprint */
+    .bp-full {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .bp-full::-webkit-scrollbar { width: 3px; }
+    .bp-full::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .bp-section { margin-bottom: 32px; }
+
+    .bp-section h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bp-section h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 14px 0 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .bp-section p {
+      font-size: 14px;
+      color: #c5c8cd;
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+
+    .bp-section ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .bp-section ul li {
+      font-size: 14px;
+      color: #c5c8cd;
+      display: flex;
+      gap: 8px;
+      line-height: 1.6;
+    }
+
+    .bp-section ul li::before { content: '→'; color: var(--gold); flex-shrink: 0; }
+
+    .module-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+
+    .module-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .module-name { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .module-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 6px; }
+    .module-outcome { font-size: 12px; color: var(--green); }
+
+    .rhythm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .rhythm-day {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .rhythm-day-name {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .rhythm-type { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .rhythm-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .launch-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+
+    .launch-phase-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .roadmap-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .roadmap-month {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .roadmap-target { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .roadmap-rev { font-size: 13px; color: var(--green); margin-bottom: 8px; }
+    .roadmap-focus { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .kwrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .kw {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .kw-num { color: var(--gold); font-weight: 700; margin-right: 4px; }
+
+    .welcome-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .welcome-block p {
+      white-space: pre-wrap;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    .rev-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .rev-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .rev-members { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .rev-amount { font-size: 18px; font-weight: 700; color: var(--green); }
+
+    /* Export bar */
+    .export-bar {
+      display: flex;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .btn-exp {
+      flex: 1;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-exp:hover { border-color: var(--gold); color: var(--gold); }
+
+    .btn-exp.gold {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+    }
+
+    .btn-exp.gold:hover { opacity: 0.85; color: #000; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--card);
+      border: 1px solid rgba(232,168,56,0.4);
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--text);
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      #screen-builder { flex-direction: column; overflow: auto; height: auto; min-height: 100vh; }
+      .chat-panel { width: 100%; height: 65vh; border-right: none; border-bottom: 1px solid var(--border); }
+      .bp-panel { min-height: 50vh; height: auto; }
+      .rhythm-grid { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .rev-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — IDEA DUMP
+     ══════════════════════════════════════════ -->
+<div id="screen-dump" class="screen active">
+  <div class="dump-wrap">
+
+    <div class="logo">
+      <div class="logo-box">⬡</div>
+      Skool Community Builder
+    </div>
+
+    <h1>Tell me about your<br />community idea.</h1>
+    <p class="sub">Write everything — your niche, your audience, your story, why you're the right person to build this. Don't filter it. The more context you give, the sharper the blueprint you'll get out.</p>
+
+    <textarea id="idea-input" placeholder="e.g. I'm a personal trainer with 8 years of experience and I've been running an online coaching business for the last 3 years — I now earn £12k/month from it. The thing is, most PT's I know are brilliant at training people but completely lost when it comes to getting clients online. They undersell themselves, don't know how to do content, have no idea how to price. I want to build a community where PT's can learn the online business side from someone who's actually built it. I'm thinking £49/month or so, maybe 500 members in the first year..."></textarea>
+
+    <button class="btn-primary" id="start-btn" onclick="startBuilder()">Let's Build This →</button>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — BUILDER
+     ══════════════════════════════════════════ -->
+<div id="screen-builder" class="screen">
+
+  <!-- LEFT: Chat -->
+  <div class="chat-panel">
+    <div class="panel-header">
+      <div class="logo-sm">
+        <div class="logo-box" style="width:24px;height:24px;font-size:13px;border-radius:5px;">⬡</div>
+        Community Builder
+      </div>
+      <button class="btn-ghost" onclick="restart()">↩ Start Over</button>
+    </div>
+
+    <div class="prog-bar">
+      <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      <span class="prog-label" id="prog-label">Getting started...</span>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="chat-input-area">
+      <textarea id="chat-input" placeholder="Reply here... (Enter to send, Shift+Enter for new line)" rows="3" onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- RIGHT: Blueprint -->
+  <div class="bp-panel">
+    <div class="bp-header">
+      <span class="bp-title">Your Community Blueprint</span>
+    </div>
+
+    <!-- Waiting -->
+    <div class="bp-waiting" id="bp-waiting">
+      <div class="icon">🏗️</div>
+      <h3>Building as you talk</h3>
+      <p>Answer the questions on the left and your blueprint will fill in here in real time.</p>
+    </div>
+
+    <!-- Live sections (shown during conversation) -->
+    <div class="bp-live" id="bp-live" style="display:none;">
+
+      <div class="bps" id="bps-identity">
+        <div class="bps-head">
+          <span class="bps-icon">🎯</span>
+          <span class="bps-name">Community Identity</span>
+          <span class="bps-badge">Building...</span>
+        </div>
+        <div class="bps-body">
+          <div class="bps-empty" id="bps-identity-empty">Waiting for niche &amp; positioning...</div>
+          <div class="bps-fields" id="bps-identity-fields" style="display:none;">
+            <div>
+              <div class="bps-field-label">Name</div>
+              <div class="bps-field-val" id="live-name">—</div>
+            </div>
+            <div>
+              <div class="bps-field-label">Tagline</div>
+              <div class="bps-field-val" id="live-tagline">—</div>
+            </div>
+            <div>
+              <div class="bps-field-label">Promise</div>
+              <div class="bps-field-val" id="live-promise">—</div>
+            </div>
+            <div>
+              <div class="bps-field-label">Target Member</div>
+              <div class="bps-field-val" id="live-target">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bps" id="bps-pricing">
+        <div class="bps-head">
+          <span class="bps-icon">💰</span>
+          <span class="bps-name">Business Model</span>
+          <span class="bps-badge">Building...</span>
+        </div>
+        <div class="bps-body">
+          <div class="bps-empty" id="bps-pricing-empty">Awaiting pricing decision...</div>
+          <div class="bps-fields" id="bps-pricing-fields" style="display:none;">
+            <div>
+              <div class="bps-field-label">Monthly Price</div>
+              <div class="bps-field-val" id="live-price">—</div>
+            </div>
+            <div>
+              <div class="bps-field-label">Offer Ladder</div>
+              <div class="bps-field-val" id="live-ladder">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bps" id="bps-curriculum">
+        <div class="bps-head">
+          <span class="bps-icon">📚</span>
+          <span class="bps-name">Curriculum</span>
+          <span class="bps-badge">Building...</span>
+        </div>
+        <div class="bps-body">
+          <div class="bps-empty" id="bps-curriculum-empty">Mapping out modules...</div>
+          <div class="bps-fields" id="bps-curriculum-fields" style="display:none;">
+            <div class="bps-field-val" id="live-curriculum">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bps" id="bps-rhythm">
+        <div class="bps-head">
+          <span class="bps-icon">📅</span>
+          <span class="bps-name">Weekly Rhythm</span>
+          <span class="bps-badge">Building...</span>
+        </div>
+        <div class="bps-body">
+          <div class="bps-empty" id="bps-rhythm-empty">Designing content cadence...</div>
+          <div class="bps-fields" id="bps-rhythm-fields" style="display:none;">
+            <div class="bps-field-val" id="live-rhythm">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /bp-live -->
+
+    <!-- Generate button -->
+    <div class="gen-bar" id="gen-bar" style="display:none;">
+      <button class="btn-generate" id="gen-btn" onclick="generateBlueprint()">
+        ✦ Generate Full Blueprint
+      </button>
+    </div>
+
+    <!-- Full generated blueprint -->
+    <div class="bp-full" id="bp-full" style="display:none;"></div>
+
+    <!-- Export bar -->
+    <div class="export-bar" id="export-bar" style="display:none;">
+      <button class="btn-exp" onclick="copyMd()">Copy Markdown</button>
+      <button class="btn-exp gold" onclick="downloadMd()">⬇ Download Blueprint</button>
+    </div>
+
+  </div><!-- /bp-panel -->
+
+</div><!-- /screen-builder -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+
+// ── Cloudflare Worker URL (proxy for Anthropic API) ──────────────────────────
+const WORKER_URL = 'REPLACE_WITH_YOUR_WORKER_URL';
+// ─────────────────────────────────────────────────────────────────────────────
+
+let history    = [];         // Anthropic message array
+let liveData   = {};         // Blueprint fields updated during chat
+let streaming  = false;
+let topics     = 0;          // Topics covered count
+let readyGen   = false;      // AI signalled ready to generate
+let mdExport   = '';         // Generated markdown string
+
+// ═══════════════════════════════════════════════════
+// SYSTEM PROMPT
+// ═══════════════════════════════════════════════════
+
+const SYS = `You are an expert Skool community strategist and business builder. You have studied every $1M+ Skool community, know the platform's Games playbook inside out, and have helped dozens of creators build thriving paid communities from scratch.
+
+Your job: have a focused, strategic conversation with someone about their community idea, ask the right questions one at a time, and help them build a complete community blueprint.
+
+CONVERSATION STYLE:
+- Be direct, warm, and genuinely engaged with their idea
+- Give your honest read — if something needs refining, say so with a reason
+- Ask ONE question per response, never more
+- Keep responses tight: 2–3 short paragraphs maximum
+- Drop real data when relevant ("$1M+ communities at this price point typically see X")
+- Acknowledge what they've shared before moving to the next question
+
+WHAT TO WORK THROUGH (in order — skip anything already covered in their idea):
+1. TARGET — Refine from broad to razor-specific. "Fitness coaches" → "fitness coaches with 1–5 clients earning under £3k/month who train people in-person but want to go online"
+2. OUTCOME — The ONE measurable result members achieve. Specific. Timeframe if possible.
+3. OBJECTION — The single biggest thing stopping the target member from getting that result.
+4. PRICING — Guide them: Volume ($9–27/mo), Accessible ($29–$97/mo), Premium ($99–$247/mo). Ask about audience income, trust level, community size expectations.
+5. CURRICULUM — 3–6 modules. What transformation does each one deliver?
+6. WEEKLY RHYTHM — 3 content touchpoints/week. What goes out Monday, Wednesday, Friday? (Posts, live calls, challenges, resources, Q&As, etc.)
+7. OFFER LADDER — Free preview → paid membership → one high-ticket add-on.
+8. LAUNCH — Existing warm audience size? What platform are they on now?
+9. FIRST MILESTONE — What does success look like at 30 days? 90 days?
+
+LIVE BLUEPRINT UPDATES:
+After every response, include update tags at the very end. The app processes these — the user never sees them. Only include updates for information you've confirmed:
+
+<upd f="name">Community name</upd>
+<upd f="tagline">Short punchy tagline</upd>
+<upd f="promise">This is for [who] who want [outcome] without [objection]</upd>
+<upd f="target">Specific target member description</upd>
+<upd f="price">$XX/month — [tier]</upd>
+<upd f="ladder">Free: [what] | Paid ($XX/mo): [what] | High-ticket: [what]</upd>
+<upd f="curriculum">Module 1: Name — description | Module 2: Name — description | [etc]</upd>
+<upd f="rhythm">Monday: type — description | Wednesday: type — description | Friday: type — description</upd>
+
+PROGRESS TRACKING:
+After each confirmed topic include: <prog n="N"/> where N = number of topics confirmed so far (0–9).
+
+READY TO GENERATE:
+When all 9 topics are covered (or the user asks to generate), add on its own line at the very end:
+READY_TO_GENERATE
+
+SKOOL PLATFORM KNOWLEDGE:
+- About page: cover image + description — the result must be stated in the first sentence
+- 11 Discovery keyword slots — primary search visibility on Skool
+- Classroom = structured curriculum (modules + lessons)
+- Community = the feed (posts, comments, interaction)
+- Games: every paid community is automatically eligible — monthly leaderboard sprint
+- Free trials: 7-day free trial = 40–50% conversion rate (Skool's own data)
+- Referral system: members earn a reward for each paying member they bring in
+- Pricing sweet spots from real data: £37–£47/mo (accessible), £97–£147/mo (premium)
+- First 14 days critical — 3x/week content minimum`;
+
+// ═══════════════════════════════════════════════════
+// START BUILDER
+// ═══════════════════════════════════════════════════
+
+async function startBuilder() {
+  const idea = document.getElementById('idea-input').value.trim();
+  if (!idea) { toast('Please write your community idea first'); return; }
+
+  // Switch screens
+  document.getElementById('screen-dump').classList.remove('active');
+  const s2 = document.getElementById('screen-builder');
+  s2.style.display = 'flex';
+  s2.classList.add('active');
+
+  // Bootstrap conversation
+  history = [];
+  const first = `Here's my Skool community idea:\n\n${idea}`;
+  addMsg('user', idea);
+  history.push({ role: 'user', content: first });
+
+  await callClaude();
+}
+
+// ═══════════════════════════════════════════════════
+// SEND USER MESSAGE
+// ═══════════════════════════════════════════════════
+
+async function sendMessage() {
+  const inp = document.getElementById('chat-input');
+  const txt = inp.value.trim();
+  if (!txt || streaming) return;
+
+  inp.value = '';
+  addMsg('user', txt);
+  history.push({ role: 'user', content: txt });
+
+  await callClaude();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CLAUDE API — STREAMING
+// ═══════════════════════════════════════════════════
+
+async function callClaude() {
+  if (streaming) return;
+  streaming = true;
+  setSend(true);
+  showTyping();
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        stream: true,
+        system: SYS,
+        messages: history
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${res.status}`);
+    }
+
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let raw = '';
+    let msgEl = null;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const lines = dec.decode(value).split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6).trim();
+        if (d === '[DONE]') break;
+        try {
+          const p = JSON.parse(d);
+          if (p.type === 'content_block_delta' && p.delta?.type === 'text_delta') {
+            raw += p.delta.text;
+            if (!msgEl) { removeTyping(); msgEl = addMsg('ai', ''); }
+            msgEl.querySelector('.msg-bubble').innerHTML = mdToHtml(stripUpd(raw));
+            document.getElementById('messages').scrollTop = 9999;
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Post-process full response
+    processResponse(raw);
+    history.push({ role: 'assistant', content: raw });
+
+  } catch(err) {
+    removeTyping();
+    addMsg('ai', `⚠️ Error: ${err.message}. Check your API key and try again.`);
+  } finally {
+    streaming = false;
+    setSend(false);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// PROCESS AI RESPONSE
+// ═══════════════════════════════════════════════════
+
+function processResponse(raw) {
+  // Extract <upd f="field">value</upd>
+  const updRe = /<upd f="([^"]+)">([\s\S]*?)<\/upd>/g;
+  let m;
+  let hasUpd = false;
+  while ((m = updRe.exec(raw)) !== null) {
+    liveData[m[1]] = m[2].trim();
+    hasUpd = true;
+  }
+  if (hasUpd) { showBpLive(); renderLive(); }
+
+  // Extract progress
+  const progM = raw.match(/<prog n="(\d+)"\/>/);
+  if (progM) { topics = parseInt(progM[1]); renderProg(); }
+
+  // Check ready
+  if (raw.includes('READY_TO_GENERATE')) {
+    readyGen = true;
+    document.getElementById('gen-bar').style.display = 'block';
+    renderProg(100);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// LIVE BLUEPRINT PANEL
+// ═══════════════════════════════════════════════════
+
+function showBpLive() {
+  document.getElementById('bp-waiting').style.display = 'none';
+  document.getElementById('bp-live').style.display = 'flex';
+}
+
+function renderLive() {
+  // Identity
+  if (liveData.name || liveData.tagline || liveData.promise || liveData.target) {
+    fillSection('identity');
+    if (liveData.name)    setEl('live-name',    liveData.name);
+    if (liveData.tagline) setEl('live-tagline',  liveData.tagline);
+    if (liveData.promise) setEl('live-promise',  liveData.promise);
+    if (liveData.target)  setEl('live-target',   liveData.target);
+  }
+  // Pricing
+  if (liveData.price || liveData.ladder) {
+    fillSection('pricing');
+    if (liveData.price)  setEl('live-price', liveData.price);
+    if (liveData.ladder) {
+      setEl('live-ladder', liveData.ladder.split('|').map(s =>
+        `<div style="margin-bottom:5px;">• ${s.trim()}</div>`
+      ).join(''));
+    }
+  }
+  // Curriculum
+  if (liveData.curriculum) {
+    fillSection('curriculum');
+    setEl('live-curriculum', liveData.curriculum.split('|').map((s, i) =>
+      `<div style="margin-bottom:7px;"><span style="color:var(--gold);font-weight:700;">Module ${i+1}:</span> ${s.trim()}</div>`
+    ).join(''));
+  }
+  // Rhythm
+  if (liveData.rhythm) {
+    fillSection('rhythm');
+    setEl('live-rhythm', liveData.rhythm.split('|').map(s =>
+      `<div style="margin-bottom:7px;">• ${s.trim()}</div>`
+    ).join(''));
+  }
+}
+
+function fillSection(id) {
+  const sec = document.getElementById(`bps-${id}`);
+  if (sec) {
+    sec.classList.add('filled');
+    const badge = sec.querySelector('.bps-badge');
+    if (badge) badge.textContent = '✓ Updated';
+  }
+  const empty = document.getElementById(`bps-${id}-empty`);
+  const fields = document.getElementById(`bps-${id}-fields`);
+  if (empty) empty.style.display = 'none';
+  if (fields) fields.style.display = 'flex';
+}
+
+function setEl(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+function renderProg(override) {
+  const pct = override !== undefined ? override : Math.round((topics / 9) * 100);
+  document.getElementById('prog-fill').style.width = `${pct}%`;
+  document.getElementById('prog-label').textContent =
+    pct >= 100 ? 'Ready to generate!' :
+    topics > 0 ? `${topics}/9 topics covered` :
+    'Getting started...';
+}
+
+// ═══════════════════════════════════════════════════
+// GENERATE FULL BLUEPRINT
+// ═══════════════════════════════════════════════════
+
+async function generateBlueprint() {
+  const btn = document.getElementById('gen-btn');
+  btn.textContent = '⟳ Generating your blueprint...';
+  btn.disabled = true;
+
+  const transcript = history.map(m => `${m.role.toUpperCase()}:\n${m.content}`).join('\n\n---\n\n');
+
+  const prompt = `Based on the community-building conversation below, produce a complete Skool community blueprint as a single valid JSON object. Fill every field with specific, actionable, real content — not placeholders.
+
+CONVERSATION:
+${transcript}
+
+Return ONLY this JSON structure (no markdown, no code fences, no explanation):
+
+{
+  "community": {
+    "name": "Community name",
+    "tagline": "One-line tagline",
+    "promise": "This is for [who] who want [outcome] without [objection]",
+    "target_member": "Specific, detailed ideal member description",
+    "core_outcome": "The main result members achieve",
+    "main_objection": "The biggest thing that normally stops them"
+  },
+  "pricing": {
+    "monthly_price": 0,
+    "currency": "£",
+    "tier": "volume|accessible|premium",
+    "rationale": "Why this price is right for this audience",
+    "free_preview": "What the free layer offers to build trust",
+    "paid_includes": ["item 1", "item 2", "item 3", "item 4", "item 5"],
+    "high_ticket": "Description of the premium 1:1 or group offer",
+    "high_ticket_price": 0
+  },
+  "curriculum": [
+    {"number": 1, "name": "Module name", "description": "What they learn and why it matters", "outcome": "What they can do after completing this"},
+    {"number": 2, "name": "Module name", "description": "What they learn and why it matters", "outcome": "What they can do after completing this"},
+    {"number": 3, "name": "Module name", "description": "What they learn and why it matters", "outcome": "What they can do after completing this"},
+    {"number": 4, "name": "Module name", "description": "What they learn and why it matters", "outcome": "What they can do after completing this"},
+    {"number": 5, "name": "Module name", "description": "What they learn and why it matters", "outcome": "What they can do after completing this"}
+  ],
+  "community_setup": {
+    "about_section": "Full about section copy (2–3 paragraphs). First sentence must state the result the community delivers.",
+    "discovery_keywords": ["kw1","kw2","kw3","kw4","kw5","kw6","kw7","kw8","kw9","kw10","kw11"],
+    "community_rules": ["Rule 1: explanation","Rule 2: explanation","Rule 3: explanation","Rule 4: explanation","Rule 5: explanation"],
+    "welcome_post": "Full welcome post text that every new member sees. Warm, specific, actionable."
+  },
+  "weekly_rhythm": {
+    "monday": {"type": "Content type (e.g. Training, Q&A, Post)", "title": "Recurring title format", "description": "What this is and why Monday"},
+    "wednesday": {"type": "Content type", "title": "Recurring title format", "description": "What this is and why Wednesday"},
+    "friday": {"type": "Content type", "title": "Recurring title format", "description": "What this is and why Friday"}
+  },
+  "launch_plan": [
+    {"phase": "Day 1–2", "focus": "Phase focus", "actions": ["Action 1", "Action 2", "Action 3"]},
+    {"phase": "Day 3–5", "focus": "Phase focus", "actions": ["Action 1", "Action 2", "Action 3"]},
+    {"phase": "Day 6–10", "focus": "Phase focus", "actions": ["Action 1", "Action 2", "Action 3"]},
+    {"phase": "Day 11–14", "focus": "Phase focus", "actions": ["Action 1", "Action 2", "Action 3"]}
+  ],
+  "roadmap": {
+    "month1":  {"target_members": 0, "focus": "Primary focus this month", "key_action": "Single most important action"},
+    "month3":  {"target_members": 0, "focus": "Primary focus this month", "key_action": "Single most important action"},
+    "month6":  {"target_members": 0, "focus": "Primary focus this month", "key_action": "Single most important action"},
+    "month12": {"target_members": 0, "focus": "Primary focus this month", "key_action": "Single most important action"}
+  }
+}`;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const raw  = data.content[0].text.trim();
+
+    // Strip any accidental markdown code fences
+    const jsonStr = raw.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
+    const bp = JSON.parse(jsonStr);
+
+    renderFull(bp);
+
+  } catch(err) {
+    btn.textContent = '✦ Generate Full Blueprint';
+    btn.disabled = false;
+    toast('⚠️ Generation failed: ' + err.message);
+    console.error(err);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER FULL BLUEPRINT
+// ═══════════════════════════════════════════════════
+
+function renderFull(bp) {
+  const c  = bp.community;
+  const p  = bp.pricing;
+  const cu = bp.curriculum;
+  const cs = bp.community_setup;
+  const wr = bp.weekly_rhythm;
+  const lp = bp.launch_plan;
+  const rm = bp.roadmap;
+  const cur = p.currency || '$';
+  const price = p.monthly_price;
+
+  document.getElementById('bp-full').innerHTML = `
+
+    <div class="bp-section">
+      <h2>🎯 Community Identity</h2>
+      <h3>Name</h3><p style="font-size:20px;font-weight:700;color:var(--text);">${esc(c.name)}</p>
+      <h3>Tagline</h3><p style="color:var(--gold);font-style:italic;">"${esc(c.tagline)}"</p>
+      <h3>Promise</h3><p>${esc(c.promise)}</p>
+      <h3>Target Member</h3><p>${esc(c.target_member)}</p>
+      <h3>Core Outcome</h3><p>${esc(c.core_outcome)}</p>
+      <h3>Main Objection Overcome</h3><p>${esc(c.main_objection)}</p>
+    </div>
+
+    <div class="bp-section">
+      <h2>💰 Business Model</h2>
+      <p><strong>Price:</strong> ${cur}${price}/month &nbsp;·&nbsp; <em>${esc(p.tier)} tier</em></p>
+      <p><strong>Why this price:</strong> ${esc(p.rationale)}</p>
+      <h3>Free Preview</h3><p>${esc(p.free_preview)}</p>
+      <h3>Paid Membership Includes</h3>
+      <ul>${p.paid_includes.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+      <h3>High-Ticket Offer</h3>
+      <p>${esc(p.high_ticket)} &mdash; <strong style="color:var(--gold)">${cur}${p.high_ticket_price}</strong></p>
+      <h3>Revenue Projections</h3>
+      <div class="rev-row">
+        ${[[50,'50 members'],[150,'150 members'],[500,'500 members']].map(([n,label]) => `
+          <div class="rev-card">
+            <div class="rev-members">${label}</div>
+            <div class="rev-amount">${cur}${(n*price).toLocaleString()}/mo</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="bp-section">
+      <h2>📚 Classroom Curriculum</h2>
+      ${cu.map(m => `
+        <div class="module-card">
+          <div class="module-num">Module ${m.number}</div>
+          <div class="module-name">${esc(m.name)}</div>
+          <div class="module-desc">${esc(m.description)}</div>
+          <div class="module-outcome">✓ ${esc(m.outcome)}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="bp-section">
+      <h2>🏠 Community Setup</h2>
+      <h3>About Section</h3>
+      <p>${esc(cs.about_section).replace(/\n\n/g,'</p><p>')}</p>
+      <h3>11 Discovery Keywords</h3>
+      <div class="kwrap">
+        ${cs.discovery_keywords.map((k,i) => `<span class="kw"><span class="kw-num">${i+1}</span>${esc(k)}</span>`).join('')}
+      </div>
+      <h3>Community Rules</h3>
+      <ul>${cs.community_rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+      <h3>Welcome Post</h3>
+      <div class="welcome-block"><p>${esc(cs.welcome_post)}</p></div>
+    </div>
+
+    <div class="bp-section">
+      <h2>📅 Weekly Content Rhythm</h2>
+      <div class="rhythm-grid">
+        ${['monday','wednesday','friday'].map(d => `
+          <div class="rhythm-day">
+            <div class="rhythm-day-name">${d.charAt(0).toUpperCase()+d.slice(1)}</div>
+            <div class="rhythm-type">${esc(wr[d].type)}</div>
+            <div class="rhythm-desc">${esc(wr[d].description)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="bp-section">
+      <h2>🚀 14-Day Launch Plan</h2>
+      ${lp.map(ph => `
+        <div class="launch-card">
+          <div class="launch-phase-title">${esc(ph.phase)} &mdash; ${esc(ph.focus)}</div>
+          <ul>${ph.actions.map(a => `<li>${esc(a)}</li>`).join('')}</ul>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="bp-section">
+      <h2>📈 Growth Roadmap</h2>
+      <div class="roadmap-grid">
+        ${Object.entries(rm).map(([key, m]) => `
+          <div class="roadmap-card">
+            <div class="roadmap-month">${key.replace('month','Month ')}</div>
+            <div class="roadmap-target">${m.target_members} members</div>
+            <div class="roadmap-rev">${cur}${(m.target_members * price).toLocaleString()}/mo potential</div>
+            <div class="roadmap-focus">${esc(m.focus)}<br/><span style="color:var(--gold);font-size:11px;">→ ${esc(m.key_action)}</span></div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  // Generate markdown
+  mdExport = buildMarkdown(bp);
+
+  // Swap views
+  document.getElementById('gen-bar').style.display   = 'none';
+  document.getElementById('bp-live').style.display   = 'none';
+  document.getElementById('bp-waiting').style.display = 'none';
+  document.getElementById('bp-full').style.display    = 'block';
+  document.getElementById('export-bar').style.display = 'flex';
+
+  toast('✓ Blueprint complete! Ready to export.');
+}
+
+// ═══════════════════════════════════════════════════
+// MARKDOWN EXPORT
+// ═══════════════════════════════════════════════════
+
+function buildMarkdown(bp) {
+  const c = bp.community; const p = bp.pricing;
+  const cu = bp.curriculum; const cs = bp.community_setup;
+  const wr = bp.weekly_rhythm; const lp = bp.launch_plan;
+  const rm = bp.roadmap; const cur = p.currency || '$';
+  const price = p.monthly_price;
+
+  return `# ${c.name} — Skool Community Blueprint
+
+> "${c.tagline}"
+
+---
+
+## 🎯 Community Identity
+
+**Promise:** ${c.promise}
+
+**Target Member:** ${c.target_member}
+
+**Core Outcome:** ${c.core_outcome}
+
+**Main Objection Overcome:** ${c.main_objection}
+
+---
+
+## 💰 Business Model
+
+**Price:** ${cur}${price}/month (${p.tier} tier)
+
+**Why this price:** ${p.rationale}
+
+### Free Preview
+${p.free_preview}
+
+### Paid Membership Includes
+${p.paid_includes.map(i => `- ${i}`).join('\n')}
+
+### High-Ticket Offer
+${p.high_ticket} — ${cur}${p.high_ticket_price}
+
+### Revenue Projections
+- 50 members → ${cur}${(50*price).toLocaleString()}/month
+- 150 members → ${cur}${(150*price).toLocaleString()}/month
+- 500 members → ${cur}${(500*price).toLocaleString()}/month
+
+---
+
+## 📚 Classroom Curriculum
+
+${cu.map(m => `### Module ${m.number}: ${m.name}\n${m.description}\n\n**Outcome:** ${m.outcome}`).join('\n\n')}
+
+---
+
+## 🏠 Community Setup
+
+### About Section
+${cs.about_section}
+
+### 11 Discovery Keywords
+${cs.discovery_keywords.map((k,i) => `${i+1}. ${k}`).join('\n')}
+
+### Community Rules
+${cs.community_rules.map((r,i) => `${i+1}. ${r}`).join('\n')}
+
+### Welcome Post
+${cs.welcome_post}
+
+---
+
+## 📅 Weekly Content Rhythm
+
+**Monday:** ${wr.monday.type} — ${wr.monday.description}
+
+**Wednesday:** ${wr.wednesday.type} — ${wr.wednesday.description}
+
+**Friday:** ${wr.friday.type} — ${wr.friday.description}
+
+---
+
+## 🚀 14-Day Launch Plan
+
+${lp.map(ph => `### ${ph.phase} — ${ph.focus}\n${ph.actions.map(a => `- ${a}`).join('\n')}`).join('\n\n')}
+
+---
+
+## 📈 Growth Roadmap
+
+| Milestone | Members | Est. Revenue | Focus | Key Action |
+|-----------|---------|--------------|-------|------------|
+${Object.entries(rm).map(([k,m]) => `| ${k.replace('month','Month ')} | ${m.target_members} | ${cur}${(m.target_members*price).toLocaleString()}/mo | ${m.focus} | ${m.key_action} |`).join('\n')}
+
+---
+
+*Generated by Skool Community Builder*
+`;
+}
+
+function copyMd() {
+  navigator.clipboard.writeText(mdExport).then(() => toast('✓ Copied to clipboard'));
+}
+
+function downloadMd() {
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([mdExport], { type: 'text/markdown' })),
+    download: 'skool-community-blueprint.md'
+  });
+  a.click();
+  toast('✓ Downloaded!');
+}
+
+// ═══════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════
+
+function addMsg(role, text) {
+  const msgs = document.getElementById('messages');
+  const el = document.createElement('div');
+  el.className = `msg ${role}`;
+  el.innerHTML = `<div class="msg-label">${role === 'user' ? 'You' : 'Builder'}</div><div class="msg-bubble">${mdToHtml(text)}</div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = 9999;
+  return el;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('messages');
+  const el = document.createElement('div');
+  el.id = 'typing';
+  el.className = 'typing-wrap';
+  el.innerHTML = `<div class="typing-label">Builder</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(el);
+  msgs.scrollTop = 9999;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing');
+  if (el) el.remove();
+}
+
+function setSend(disabled) {
+  document.getElementById('send-btn').disabled   = disabled;
+  document.getElementById('chat-input').disabled = disabled;
+}
+
+function stripUpd(text) {
+  return text
+    .replace(/<upd[^>]*>[\s\S]*?<\/upd>/g, '')
+    .replace(/<prog[^/]*\/>/g, '')
+    .replace(/READY_TO_GENERATE/g, '')
+    .trim();
+}
+
+function mdToHtml(text) {
+  if (!text) return '';
+  const clean = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return clean
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .split(/\n\n+/)
+    .map(para => `<p>${para.replace(/\n/g,'<br>')}</p>`)
+    .join('');
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function restart() {
+  if (history.length && !confirm('Start over? Your conversation will be lost.')) return;
+  history = []; liveData = {}; topics = 0; readyGen = false; mdExport = '';
+  streaming = false;
+
+  document.getElementById('messages').innerHTML        = '';
+  document.getElementById('bp-waiting').style.display  = 'flex';
+  document.getElementById('bp-live').style.display     = 'none';
+  document.getElementById('bp-full').style.display     = 'none';
+  document.getElementById('export-bar').style.display  = 'none';
+  document.getElementById('gen-bar').style.display     = 'none';
+  document.getElementById('prog-fill').style.width     = '0%';
+  document.getElementById('prog-label').textContent    = 'Getting started...';
+
+  // Reset section badges
+  ['identity','pricing','curriculum','rhythm'].forEach(id => {
+    const s = document.getElementById(`bps-${id}`);
+    if (s) {
+      s.classList.remove('filled');
+      const badge = s.querySelector('.bps-badge');
+      if (badge) badge.textContent = 'Building...';
+    }
+    const empty = document.getElementById(`bps-${id}-empty`);
+    const fields = document.getElementById(`bps-${id}-fields`);
+    if (empty) empty.style.display = 'block';
+    if (fields) fields.style.display = 'none';
+  });
+
+  document.getElementById('screen-builder').style.display = 'none';
+  document.getElementById('screen-builder').classList.remove('active');
+  document.getElementById('screen-dump').classList.add('active');
+  document.getElementById('idea-input').value = '';
+}
+</script>
+</body>
+</html>
